@@ -10,12 +10,12 @@ import { AuthService } from 'src/app/Service/auth.service';
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
-  
-  
-  constructor(public auth: AngularFireAuth, private http: HttpClient , private router: Router , public _serviceAuth:AuthService) { }
- 
+
+
+  constructor(public auth: AngularFireAuth, private http: HttpClient, private router: Router, public _serviceAuth: AuthService) { }
+
   ngOnInit(): void {
-    if(this._serviceAuth.user==null){
+    if (this._serviceAuth.user == null) {
       this.router.navigate(['/'])
     }
   }
@@ -62,7 +62,7 @@ export class ChatComponent implements OnInit {
     });
   }
 
-   onKeyPress(event: KeyboardEvent) {
+  onKeyPress(event: KeyboardEvent) {
     if (event.key === "Enter") {
       this.sendMessage();
     }
@@ -71,7 +71,7 @@ export class ChatComponent implements OnInit {
   signOut() {
     this.auth.signOut()
       .then(() => {
-        this._serviceAuth.user=null
+        this._serviceAuth.user = null
         console.log('Déconnexion réussie!');
         this.router.navigate(['/'])
 
