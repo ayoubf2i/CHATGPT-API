@@ -1,11 +1,11 @@
-export const environment={
-    production:false,
-    firebaseConfig : {
-        apiKey: "AIzaSyADYPrdbaWWEJG2OpdqV4onXxW5tC2pDSY",
-        authDomain: "chatapi-1a0c9.firebaseapp.com",
-        projectId: "chatapi-1a0c9",
-        storageBucket: "chatapi-1a0c9.appspot.com",
-        messagingSenderId: "921704614078",
-        appId: "1:921704614078:web:0b02b2da337556c686f6ef"
-      }
+export const environment = {
+  production: false,
+  firebaseConfig: {
+    apiKey: "AIzaSyARW_WvO1mmE9yg7hUNq43F1uv8qih3di8",
+    authDomain: "chatgpt-api-6853a.firebaseapp.com",
+    projectId: "chatgpt-api-6853a",
+    storageBucket: "chatgpt-api-6853a.appspot.com",
+    messagingSenderId: "409661489145",
+    appId: "1:409661489145:web:245706323ec5744cff8728"
+  }
 }

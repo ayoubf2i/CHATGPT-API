@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { AuthService } from 'src/app/Service/auth.service';
 
 @Component({
@@ -11,12 +12,16 @@ import { AuthService } from 'src/app/Service/auth.service';
 })
 export class ChatComponent implements OnInit {
 
+  generative!: GoogleGenerativeAI;
 
-  constructor(public auth: AngularFireAuth, private http: HttpClient, private router: Router, public _serviceAuth: AuthService) { }
+  constructor(public auth: AngularFireAuth, private http: HttpClient, private router: Router, public _serviceAuth: AuthService) {
+    this.generative = new GoogleGenerativeAI('AIzaSyD77VYqM_LsBJGGuHPb0M778C56JNXucqI')
+
+  }
 
   ngOnInit(): void {
     if (this._serviceAuth.user == null) {
-      this.router.navigate(['/'])
+      this.router.navigate(['/']);
     }
   }
 
@@ -29,37 +34,23 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  apiUrl = 'https://api.openai.com/v1/chat/completions';
-
   userInput: string = '';
-  result: any;
 
   messages: { role: string; content: string; }[] = [];
 
-  httpHeaders = new HttpHeaders().set("Authorization", "Bearer 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");
 
-  sendMessage() {
-    // Ajouter le message de l'utilisateur aux messages
+  async sendMessage() {
     this.messages.push({ role: "user", content: this.userInput });
 
-    // Construire le payload avec les messages actuels
-    const payload = {
-      model: "gpt-3.5-turbo",
-      messages: this.messages
-    };
+    const model = this.generative.getGenerativeModel({ model: 'gemini-pro' });
+    const result = await model.generateContent(this.userInput);
 
-    this.http.post(this.apiUrl, payload, { headers: this.httpHeaders }).subscribe({
-      next: (resp) => {
-        this.result = resp;
-        // Ajouter la réponse de l'API à l'historique du chat
-        this.messages.push({ role: "system", content: this.result.choices[0].message.content });
-        // Réinitialiser l'entrée utilisateur
-        this.userInput = '';
-      },
-      error: (err) => {
-        console.error('Erreur lors de l\'envoi du message :', err);
-      }
-    });
+    this.userInput = '';
+
+    const resp = await result.response;
+    const text = resp.text();
+
+    this.messages.push({ role: "system", content: text });
   }
 
   onKeyPress(event: KeyboardEvent) {
@@ -71,13 +62,13 @@ export class ChatComponent implements OnInit {
   signOut() {
     this.auth.signOut()
       .then(() => {
-        this._serviceAuth.user = null
+        this._serviceAuth.user = null;
         console.log('Déconnexion réussie!');
-        this.router.navigate(['/'])
-
+        this.router.navigate(['/']);
       })
       .catch((error) => {
         console.error('Erreur lors de la déconnexion:', error);
       });
   }
 }
+
